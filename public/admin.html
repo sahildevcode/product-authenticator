@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Product & Print Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    /* Top Nav */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: #0f172a;
+      color: white;
+      padding: 20px 26px;
+      border-radius: 18px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-light {
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+    }
+    .btn-light:hover { background: rgba(255, 255, 255, 0.22); }
+
+    .btn-primary {
+      background: #0284c7;
+      color: white;
+    }
+    .btn-primary:hover { background: #0369a1; }
+
+    .btn-success {
+      background: #16a34a;
+      color: white;
+    }
+    .btn-success:hover { background: #15803d; }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    .btn-danger:hover { background: #dc2626; }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      border-radius: 8px;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f172a;
+    }
+
+    /* Quick Print Bar */
+    .quick-print-box {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 2px solid #0284c7;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .print-form-row {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0f172a;
+      background: white;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+      padding: 14px 16px;
+      font-weight: 800;
+      color: #475569;
+      border-bottom: 2px solid #e2e8f0;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    .badge-price {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-grid-item label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="brand-title">
+        <i data-lucide="printer" style="color: #38bdf8;"></i>
+        Product & Slip Printing Manager
+      </div>
+      <div class="nav-actions">
+        <a href="/slip-generator.html" class="btn btn-light">
+          <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> Slip Generator
+        </a>
+        <a href="/mini-sticker.html" class="btn btn-light">
+          <i data-lucide="qr-code" style="width: 16px; height: 16px;"></i> Mini Sticker
+        </a>
+      </div>
+    </header>
+
+    <!-- SECTION 1: QUICK PRINT (User selects Product & Quantity -> Prints!) -->
+    <div class="quick-print-box">
+      <div style="font-size: 1.05rem; font-weight: 800; color: #0369a1; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <i data-lucide="zap"></i> Quick Print Slips (Select & Print)
+      </div>
+
+      <div class="print-form-row">
+        <div class="form-group" style="flex: 2;">
+          <label>1. Select Product</label>
+          <select id="selQuickProduct" class="form-control">
+            <option value="">Loading saved products...</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label>2. How Many Slips / Quantity?</label>
+          <select id="selQuickQty" class="form-control">
+            <option value="1">1 Slip (Single Preview)</option>
+            <option value="2">2 Slips</option>
+            <option value="4">4 Slips</option>
+            <option value="6" selected>6 Slips (Sheet Layout)</option>
+            <option value="12">12 Slips (2 Sheets)</option>
+            <option value="18">18 Slips (3 Sheets)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" style="height: 44px; padding: 0 24px;" onclick="goToPrint()">
+          <i data-lucide="printer" style="width: 18px; height: 18px;"></i> Open & Print Slips
+        </button>
+      </div>
+    </div>
+
+    <!-- SECTION 2: SAVED PRODUCTS TABLE -->
+    <div class="card">
+      <div class="card-title" style="justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="package" style="color: #0284c7;"></i>
+          Saved Products List
+        </div>
+        <button class="btn btn-sm btn-light" style="color: #0f172a; border: 1px solid #cbd5e1;" onclick="loadProducts()">
+          <i data-lucide="refresh-cw" style="width: 12px; height: 12px;"></i> Refresh
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Category & Flavor</th>
+              <th>Net Wt.</th>
+              <th>M.R.P.</th>
+              <th>Mfg / Exp Date</th>
+              <th>Importer</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody">
+            <tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 20px;">Loading saved products...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 3: ADD NEW PRODUCT FORM -->
+    <div class="card">
+      <div class="card-title">
+        <i data-lucide="plus-circle" style="color: #16a34a;"></i>
+        Add / Save New Product
+      </div>
+
+      <form id="addProductForm" onsubmit="handleSaveProduct(event)">
+        <div class="form-grid">
+          <div class="form-grid-item">
+            <label>Product Name *</label>
+            <input type="text" id="addName" class="form-control" placeholder="e.g. GNC 100% Whey Protein" required>
+          </div>
+
+          <div class="form-grid-item">
+            <label>Item Category</label>
+            <input type="text" id="addItemType" class="form-control" value="Protein Powder" placeholder="e.g. Protein Powder">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Flavor</label>
+            <input type="text" id="addFlavor" class="form-control" value="Vanilla Cream" placeholder="e.g. Vanilla Cream">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Net Weight</label>
+            <input type="text" id="addNetWt" class="form-control" value="1.9 lbs (907g)" placeholder="e.g. 1.9 lbs (907g)">
+          </div>
+
+          <div class="form-grid-item">
+            <label>M.R.P. (₹) *</label>
+            <input type="text" id="addMrp" class="form-control" value="3700" placeholder="e.g. 3700" required>
+          </div>
+
+          <div class="form-grid-item">
+            <label>FSSAI License No.</label>
+            <input type="text" id="addFssai" class="form-control" value="10016011003870" placeholder="e.g. 10016011003870">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Mfg Dt. (Manufacture Date)</label>
+            <input type="text" id="addMfgDt" class="form-control" value="8/2026" placeholder="e.g. 8/2026">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Exp. Dt. (Expiry Date)</label>
+            <input type="text" id="addExpDt" class="form-control" value="09/2028" placeholder="e.g. 09/2028">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Country of Origin</label>
+            <input type="text" id="addOrigin" class="form-control" value="USA">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Mfg By</label>
+            <input type="text" id="addMfgBy" class="form-control" value="Guardian Healthcare">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Importer Brand Name</label>
+            <input type="text" id="addImporter" class="form-control" value="Guardian Healthcare Services Pvt. Ltd.">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Importer Logo Text</label>
+            <input type="text" id="addLogo" class="form-control" value="GNC">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="submit" class="btn btn-success" style="padding: 12px 24px;">
+            <i data-lucide="check" style="width: 18px; height: 18px;"></i> Save Product to Database
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    let savedProducts = [];
+
+    async function loadProducts() {
+      try {
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        if (data.success && data.products) {
+          savedProducts = data.products;
+          renderQuickDropdown();
+          renderProductsTable();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderQuickDropdown() {
+      const sel = document.getElementById('selQuickProduct');
+      if (savedProducts.length === 0) {
+        sel.innerHTML = '<option value="">No products found</option>';
+        return;
+      }
+      sel.innerHTML = savedProducts.map(p => `
+        <option value="${p.id}">${p.name} (₹${p.mrp}) - ${p.flavor || ''}</option>
+      `).join('');
+    }
+
+    function renderProductsTable() {
+      const tbody = document.getElementById('productsTableBody');
+      if (savedProducts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 20px;">No saved products yet. Add one below!</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = savedProducts.map(p => `
+        <tr>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.itemType || 'Supplement'} • ${p.flavor || '—'}</td>
+          <td>${p.netWt || '—'}</td>
+          <td><span class="badge-price">₹ ${p.mrp}</span></td>
+          <td>${p.mfgDt || '—'} / ${p.expDt || '—'}</td>
+          <td style="font-size: 0.8rem; color: #475569;">${p.importerName || '—'}</td>
+          <td style="text-align: right; white-space: nowrap;">
+            <button class="btn btn-sm btn-primary" onclick="printSingleProduct('${p.id}')">
+              <i data-lucide="printer" style="width: 14px; height: 14px;"></i> Print Slips
+            </button>
+            <button class="btn btn-sm btn-danger" style="margin-left: 6px;" onclick="deleteProduct('${p.id}')" title="Delete">
+              <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function goToPrint() {
+      const prodId = document.getElementById('selQuickProduct').value;
+      const qty = document.getElementById('selQuickQty').value;
+      if (!prodId) {
+        alert('Please select a product first.');
+        return;
+      }
+      window.location.href = `/slip-generator.html?productId=${prodId}&qty=${qty}`;
+    }
+
+    function printSingleProduct(prodId) {
+      window.location.href = `/slip-generator.html?productId=${prodId}&qty=6`;
+    }
+
+    async function handleSaveProduct(e) {
+      e.preventDefault();
+      const product = {
+        name: document.getElementById('addName').value.trim(),
+        itemType: document.getElementById('addItemType').value.trim(),
+        flavor: document.getElementById('addFlavor').value.trim(),
+        netWt: document.getElementById('addNetWt').value.trim(),
+        mrp: document.getElementById('addMrp').value.trim(),
+        fssaiLicense: document.getElementById('addFssai').value.trim(),
+        mfgDt: document.getElementById('addMfgDt').value.trim(),
+        expDt: document.getElementById('addExpDt').value.trim(),
+        countryOfOrigin: document.getElementById('addOrigin').value.trim(),
+        mfgBy: document.getElementById('addMfgBy').value.trim(),
+        importerName: document.getElementById('addImporter').value.trim(),
+        importerShort: document.getElementById('addLogo').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(product)
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('✅ Product saved successfully!');
+          document.getElementById('addName').value = '';
+          loadProducts();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Server error saving product');
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Are you sure you want to delete this product?')) return;
+      try {
+        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          loadProducts();
+        }
+      } catch (err) {
+        alert('Error deleting product');
+      }
+    }
+
+    loadProducts();
+  </script>
+</body>
+</html>

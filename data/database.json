@@ -1,0 +1,305 @@
+{
+  "products": [
+    {
+      "id": "prod-001",
+      "itemType": "Dietary Supplement",
+      "name": "Optimum Nutrition (ON) Serious Mass",
+      "flavor": "Double Rich Chocolate",
+      "qty": "1 N",
+      "netWt": "6 lb (2.75Kg)",
+      "mrp": "7499",
+      "countryOfOrigin": "USA",
+      "mfgBy": "Iovate Health Sciences / Glanbia Nutritionals, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+      "mfgDt": "08/2026",
+      "expDt": "07/2028",
+      "batchNo": "ON-SM-94821",
+      "importerName": "MusclePro Nutrition Pvt. Ltd. (MPN)",
+      "importerAddress": "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+      "fssaiLicense": "10015022003370",
+      "fssaiApproved": true,
+      "fccCertified": true,
+      "customerCare": "+91-80871 79998",
+      "email": "info@musclepronutrition.com"
+    },
+    {
+      "id": "prod-002",
+      "itemType": "Dietary Supplement",
+      "name": "RC Pro-Antium",
+      "flavor": "Vanilla Wafer",
+      "qty": "1 N",
+      "netWt": "6 lb (2.75Kg)",
+      "mrp": "7499",
+      "countryOfOrigin": "USA",
+      "mfgBy": "Iovate Health Sciences, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+      "mfgDt": "09/2026",
+      "expDt": "08/2028",
+      "batchNo": "RC-PA-34428",
+      "importerName": "MusclePro Nutrition Pvt. Ltd. (MPN)",
+      "importerAddress": "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+      "fssaiLicense": "10015022003370",
+      "fssaiApproved": true,
+      "fccCertified": true,
+      "customerCare": "+91-80871 79998",
+      "email": "info@musclepronutrition.com"
+    },
+    {
+      "id": "prod-003",
+      "itemType": "Protein Powder",
+      "name": "GNC Pro Performance 100% Whey Protein Pow",
+      "flavor": "Vanilla Cream",
+      "qty": "1 N",
+      "netWt": "1.9 lbs (907g)",
+      "mrp": "3700",
+      "countryOfOrigin": "USA",
+      "mfgBy": "Guardian Healthcare, USA",
+      "mfgDt": "8/2026",
+      "expDt": "09/2028",
+      "batchNo": "GNC-2026-W907",
+      "importerName": "Guardian Healthcare Services Pvt. Ltd.",
+      "importerAddress": "Plot No 4, DSIIDC, Okhla Ind Area, Phase-2, New Delhi",
+      "fssaiLicense": "10016011003870",
+      "fssaiApproved": true,
+      "fccCertified": true,
+      "customerCare": "+91-80871 79998",
+      "email": "info@guardianhealthcare.com"
+    }
+  ],
+  "codes": [
+    {
+      "code": "804577",
+      "serialNo": "3442854",
+      "productId": "prod-002",
+      "status": "ACTIVE",
+      "scanCount": 1,
+      "firstScannedAt": "2026-10-11T03:17:38.600Z",
+      "lastScannedAt": "2026-10-11T03:17:38.600Z",
+      "scanHistory": [
+        {
+          "timestamp": "2026-10-11T03:17:38.600Z",
+          "ip": "::1",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+        }
+      ]
+    },
+    {
+      "code": "942185",
+      "serialNo": "3442855",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "518392",
+      "serialNo": "3442856",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "433585",
+      "serialNo": "3442854",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "936316",
+      "serialNo": "3442856",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "490107",
+      "serialNo": "3442858",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "416045",
+      "serialNo": "3442860",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "457220",
+      "serialNo": "3442862",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "938291",
+      "serialNo": "3442864",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "252843",
+      "serialNo": "3442866",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "253895",
+      "serialNo": "3442868",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "176809",
+      "serialNo": "3442870",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "419040",
+      "serialNo": "3442872",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "676393",
+      "serialNo": "3442864",
+      "productId": "prod-003",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "706806",
+      "serialNo": "3442866",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "935942",
+      "serialNo": "3442868",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "265337",
+      "serialNo": "3442870",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "204045",
+      "serialNo": "3442872",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "418889",
+      "serialNo": "3442874",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "798649",
+      "serialNo": "3442876",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "342191",
+      "serialNo": "3442878",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "887523",
+      "serialNo": "3442880",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    },
+    {
+      "code": "295318",
+      "serialNo": "3442882",
+      "productId": "prod-001",
+      "status": "ACTIVE",
+      "scanCount": 0,
+      "firstScannedAt": null,
+      "lastScannedAt": null,
+      "scanHistory": []
+    }
+  ]
+}
