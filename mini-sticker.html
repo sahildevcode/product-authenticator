@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Horizontal QR Sticker Generator | Serial Number Seal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Top Controls Bar */
+    .top-toolbar {
+      max-width: 1160px;
+      margin: 0 auto 24px;
+      background: white;
+      padding: 16px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar-title h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .toolbar-title p {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #0284c7;
+      color: white;
+    }
+    .btn-primary:hover { background: #0369a1; }
+
+    .btn-outline {
+      background: white;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-outline:hover { background: #f8fafc; }
+
+    .btn-dark {
+      background: #0f172a;
+      color: white;
+    }
+    .btn-dark:hover { background: #1e293b; }
+
+    /* Navigation Bar Links */
+    .nav-tabs {
+      max-width: 1160px;
+      margin: 0 auto 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-tab {
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: #475569;
+      background: white;
+      border: 1px solid #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-tab:hover {
+      background: #f8fafc;
+      color: #0284c7;
+    }
+
+    .nav-tab.active {
+      background: #0284c7;
+      color: white;
+      border-color: #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+
+    /* Layout Grid */
+    .main-grid {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Customizer Sidebar */
+    .customizer-card {
+      background: white;
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      height: fit-content;
+    }
+
+    .card-heading {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f172a;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #0f172a;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    /* Stickers Display Grid */
+    .stickers-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+
+    /* -------------------------------------------------------------------------
+       HORIZONTAL MINI QR CODE STICKER (COMPACT SEAL)
+    -------------------------------------------------------------------------- */
+    .mini-sticker-card {
+      width: 290px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1.5px solid #0f172a;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+      padding: 10px 12px;
+      position: relative;
+      background-color: #fffefb;
+      overflow: hidden;
+    }
+
+    /* Top Title Bar */
+    .mini-sticker-title {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: #0f172a;
+      text-transform: uppercase;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      border-bottom: 1.5px solid #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    /* Horizontal Body */
+    .mini-sticker-body {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mini-qr-box {
+      width: 76px;
+      height: 76px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .mini-qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .mini-info-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .serial-tag-label {
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: #64748b;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .serial-number-badge {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #0f172a;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 3px 6px;
+      border-radius: 6px;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .mini-instructions {
+      font-size: 0.52rem;
+      color: #475569;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .mini-security-tag {
+      margin-top: 4px;
+      font-size: 0.48rem;
+      color: #0284c7;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    @page {
+      size: auto;
+      margin: 8mm;
+    }
+
+    /* Print View */
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .top-toolbar, .nav-tabs, .customizer-card {
+        display: none !important;
+      }
+      .main-grid {
+        display: block !important;
+      }
+      .stickers-container {
+        gap: 12px !important;
+      }
+      .mini-sticker-card {
+        box-shadow: none !important;
+        border: 1.5px solid #000 !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="toolbar-title">
+      <h1>⚡ Horizontal Mini QR Sticker Generator</h1>
+      <p>छोटा सा हॉरिजॉन्टल स्टीकर: 'Verify Authentication of this Product' + QR + Serial Number</p>
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn btn-primary" onclick="window.print()">
+        <i data-lucide="printer" style="width: 16px; height: 16px;"></i> Print Stickers Sheet
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs to switch between views -->
+  <div class="nav-tabs">
+    <a href="./index.html" class="nav-tab">
+      <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> 🏷️ Full Importer Slip (Image 2 Replica)
+    </a>
+    <a href="./mini-sticker.html" class="nav-tab active">
+      <i data-lucide="qr-code" style="width: 16px; height: 16px;"></i> ⚡ Mini Horizontal QR Sticker
+    </a>
+    <a href="./admin.html" class="nav-tab">
+      <i data-lucide="settings" style="width: 16px; height: 16px;"></i> ⚙️ Admin Dashboard
+    </a>
+  </div>
+
+  <div class="main-grid">
+    <!-- Left Sidebar: Controls -->
+    <div class="customizer-card">
+      <div class="card-heading">
+        <i data-lucide="sliders" style="width: 18px; height: 18px; color: #0284c7;"></i>
+        Sticker Settings
+      </div>
+
+      <!-- Sticker Title -->
+      <div class="form-group">
+        <label>Sticker Header Headline</label>
+        <input 
+          type="text" 
+          id="inpTitle" 
+          class="form-input" 
+          value="Verify Authentication of this Product" 
+          oninput="renderStickers()"
+        />
+      </div>
+
+      <!-- Target Website URL -->
+      <div class="form-group" style="background: #f0f9ff; border: 1.5px solid #0284c7; border-radius: 10px; padding: 12px;">
+        <label style="color: #0369a1; font-weight: 800;">
+          QR Code Target URL (Aapki Website)
+        </label>
+        <p style="font-size: 0.7rem; color: #0284c7; margin-bottom: 6px;">
+          QR scan karne par customer is website par redirect hoga:
+        </p>
+        <input 
+          type="text" 
+          id="inpUrl" 
+          class="form-input" 
+          placeholder="e.g. https://yourbrand.com/verify" 
+          value=""
+          oninput="debounceRender()"
+          style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: #0369a1;"
+        />
+        <div style="margin-top: 8px; font-size: 0.68rem; color: #64748b;">
+          Live Target: <span id="lblTargetUrl" style="font-family: monospace; color: #0f172a; font-weight: 700;"></span>
+        </div>
+      </div>
+
+      <!-- Serial Prefix -->
+      <div class="form-group">
+        <label>Serial Number Prefix</label>
+        <input 
+          type="text" 
+          id="inpPrefix" 
+          class="form-input" 
+          value="SN-" 
+          placeholder="e.g. SN- or AUTH- or leave blank" 
+          oninput="renderStickers()"
+        />
+      </div>
+
+      <!-- Count -->
+      <div class="form-group">
+        <label>Number of Stickers to Display / Print</label>
+        <select id="selCount" class="form-input" onchange="renderStickers()">
+          <option value="1">1 Sticker (Single Preview)</option>
+          <option value="2">2 Stickers</option>
+          <option value="4">4 Stickers</option>
+          <option value="8" selected>8 Stickers (A4 Sheet Layout)</option>
+          <option value="12">12 Stickers (Full Sheet)</option>
+        </select>
+      </div>
+
+      <button class="btn btn-dark" style="width: 100%; margin-top: 8px;" onclick="generateNewBatch()">
+        <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i> Generate New Serial Numbers
+      </button>
+    </div>
+
+    <!-- Right: Mini Stickers Display -->
+    <div class="stickers-container" id="stickersContainer">
+      <!-- Injected dynamically -->
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    let serialData = [
+      { serial: "3442854", code: "804577" },
+      { serial: "3442855", code: "942185" },
+      { serial: "3442856", code: "518392" },
+      { serial: "3442864", code: "676393" },
+      { serial: "3442866", code: "706806" },
+      { serial: "3442868", code: "935942" },
+      { serial: "3442870", code: "265337" },
+      { serial: "3442872", code: "204045" },
+      { serial: "3442874", code: "418889" },
+      { serial: "3442876", code: "798649" },
+      { serial: "3442878", code: "342191" },
+      { serial: "3442880", code: "887523" }
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const defaultUrl = `${window.location.origin}/verify`;
+      const urlInput = document.getElementById('inpUrl');
+      if (!urlInput.value) {
+        urlInput.value = defaultUrl;
+      }
+      renderStickers();
+    });
+
+    let debounceTimer = null;
+    function debounceRender() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        renderStickers();
+      }, 350);
+    }
+
+    function getTargetUrl() {
+      const custom = document.getElementById('inpUrl').value.trim();
+      return custom || `${window.location.origin}/verify`;
+    }
+
+    async function getQrDataUrl(url) {
+      // 1. Try browser QRCode library
+      try {
+        if (window.QRCode && typeof window.QRCode.toDataURL === 'function') {
+          return await window.QRCode.toDataURL(url, {
+            width: 200,
+            margin: 1,
+            color: { dark: '#000000', light: '#FFFFFF' }
+          });
+        }
+      } catch (e) {}
+
+      // 2. Try backend api
+      try {
+        const res = await fetch(`/api/qr?text=${encodeURIComponent(url)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.dataUrl) return data.dataUrl;
+        }
+      } catch (err) {}
+
+      // 3. Fallback to free public QR API
+      return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+    }
+
+    async function renderStickers() {
+      const container = document.getElementById('stickersContainer');
+      const title = document.getElementById('inpTitle').value;
+      const prefix = document.getElementById('inpPrefix').value;
+      const count = parseInt(document.getElementById('selCount').value, 10);
+      const targetUrl = getTargetUrl();
+
+      document.getElementById('lblTargetUrl').innerText = targetUrl;
+
+      container.innerHTML = '<div style="color: #64748b; font-size: 0.9rem;">Generating stickers...</div>';
+
+      // The QR code for all stickers points to the target verification website
+      const qrUrl = await getQrDataUrl(targetUrl);
+
+      let html = '';
+      for (let i = 0; i < count; i++) {
+        const item = serialData[i % serialData.length];
+        const fullSerial = `${prefix}${item.serial}`;
+
+        html += `
+          <div class="mini-sticker-card">
+            <!-- Top Title -->
+            <div class="mini-sticker-title">
+              <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #0284c7;"></i>
+              ${title}
+            </div>
+
+            <!-- Horizontal Body -->
+            <div class="mini-sticker-body">
+              <!-- QR Code -->
+              <div class="mini-qr-box" title="Scan to open: ${targetUrl}">
+                <img src="${qrUrl}" alt="QR">
+              </div>
+
+              <!-- Serial Number & Info -->
+              <div class="mini-info-box">
+                <div class="serial-tag-label">Serial Number</div>
+                <div class="serial-number-badge">${fullSerial}</div>
+                <div class="mini-instructions">
+                  Scan QR code & enter Serial No. on website to verify.
+                </div>
+                <div class="mini-security-tag">
+                  <i data-lucide="lock" style="width: 10px; height: 10px;"></i>
+                  100% Genuine Security Seal
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    async function generateNewBatch() {
+      try {
+        const res = await fetch('/api/admin/generate-codes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ count: 12, codeLength: 6 })
+        });
+        const data = await res.json();
+        if (data.success && data.generated) {
+          serialData = data.generated.map(g => ({ serial: g.serialNo, code: g.code }));
+          renderStickers();
+        }
+      } catch (err) {
+        alert('Error generating serial numbers');
+      }
+    }
+  </script>
+</body>
+</html>

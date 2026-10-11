@@ -236,10 +236,10 @@
         Product & Slip Printing Manager
       </div>
       <div class="nav-actions">
-        <a href="/slip-generator.html" class="btn btn-light">
+        <a href="./index.html" class="btn btn-light">
           <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> Slip Generator
         </a>
-        <a href="/mini-sticker.html" class="btn btn-light">
+        <a href="./mini-sticker.html" class="btn btn-light">
           <i data-lucide="qr-code" style="width: 16px; height: 16px;"></i> Mini Sticker
         </a>
       </div>
@@ -401,20 +401,98 @@
   <script>
     lucide.createIcons();
 
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "prod-001",
+        itemType: "Dietary Supplement",
+        name: "Optimum Nutrition (ON) Serious Mass",
+        flavor: "Double Rich Chocolate",
+        qty: "1 N",
+        netWt: "6 lb (2.75Kg)",
+        mrp: "7499",
+        countryOfOrigin: "USA",
+        mfgBy: "Iovate Health Sciences / Glanbia Nutritionals, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+        mfgDt: "08/2026",
+        expDt: "07/2028",
+        batchNo: "ON-SM-94821",
+        importerName: "MusclePro Nutrition Pvt. Ltd. (MPN)",
+        importerShort: "MPN",
+        importerAddress: "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+        fssaiLicense: "10015022003370",
+        customerCare: "+91-80871 79998 | info@musclepronutrition.com"
+      },
+      {
+        id: "prod-002",
+        itemType: "Dietary Supplement",
+        name: "RC Pro-Antium",
+        flavor: "Vanilla Wafer",
+        qty: "1 N",
+        netWt: "6 lb (2.75Kg)",
+        mrp: "7499",
+        countryOfOrigin: "USA",
+        mfgBy: "Iovate Health Sciences, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+        mfgDt: "09/2026",
+        expDt: "08/2028",
+        batchNo: "RC-PA-34428",
+        importerName: "MusclePro Nutrition Pvt. Ltd. (MPN)",
+        importerShort: "MPN",
+        importerAddress: "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+        fssaiLicense: "10015022003370",
+        customerCare: "+91-80871 79998 | info@musclepronutrition.com"
+      },
+      {
+        id: "prod-003",
+        itemType: "Protein Powder",
+        name: "GNC Pro Performance 100% Whey Protein Pow",
+        flavor: "Vanilla Cream",
+        qty: "1 N",
+        netWt: "1.9 lbs (907g)",
+        mrp: "3700",
+        countryOfOrigin: "USA",
+        mfgBy: "Guardian Healthcare, USA",
+        mfgDt: "8/2026",
+        expDt: "09/2028",
+        batchNo: "GNC-2026-W907",
+        importerName: "Guardian Healthcare Services Pvt. Ltd.",
+        importerShort: "GNC",
+        importerAddress: "Plot No 4, DSIIDC, Okhla Ind Area, Phase-2, New Delhi",
+        fssaiLicense: "10016011003870",
+        customerCare: "+91-80871 79998 | info@guardianhealthcare.com"
+      }
+    ];
+
     let savedProducts = [];
 
     async function loadProducts() {
+      // 1. Try local Node backend API
       try {
         const res = await fetch('/api/products');
-        const data = await res.json();
-        if (data.success && data.products) {
-          savedProducts = data.products;
-          renderQuickDropdown();
-          renderProductsTable();
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.products && data.products.length > 0) {
+            savedProducts = data.products;
+            localStorage.setItem('saved_products', JSON.stringify(savedProducts));
+            renderQuickDropdown();
+            renderProductsTable();
+            return;
+          }
         }
-      } catch (err) {
-        console.error(err);
+      } catch (err) {}
+
+      // 2. Fallback to localStorage (Works on GitHub Pages)
+      const local = localStorage.getItem('saved_products');
+      if (local) {
+        try {
+          savedProducts = JSON.parse(local);
+        } catch(e) {
+          savedProducts = DEFAULT_PRODUCTS;
+        }
+      } else {
+        savedProducts = DEFAULT_PRODUCTS;
+        localStorage.setItem('saved_products', JSON.stringify(DEFAULT_PRODUCTS));
       }
+      renderQuickDropdown();
+      renderProductsTable();
     }
 
     function renderQuickDropdown() {
@@ -464,16 +542,17 @@
         alert('Please select a product first.');
         return;
       }
-      window.location.href = `/slip-generator.html?productId=${prodId}&qty=${qty}`;
+      window.location.href = `./index.html?productId=${prodId}&qty=${qty}`;
     }
 
     function printSingleProduct(prodId) {
-      window.location.href = `/slip-generator.html?productId=${prodId}&qty=6`;
+      window.location.href = `./index.html?productId=${prodId}&qty=6`;
     }
 
     async function handleSaveProduct(e) {
       e.preventDefault();
       const product = {
+        id: 'prod-' + Date.now(),
         name: document.getElementById('addName').value.trim(),
         itemType: document.getElementById('addItemType').value.trim(),
         flavor: document.getElementById('addFlavor').value.trim(),
@@ -490,37 +569,36 @@
         customerCare: document.getElementById('addCustCare').value.trim()
       };
 
+      const existingIdx = savedProducts.findIndex(p => p.name.toLowerCase() === product.name.toLowerCase());
+      if (existingIdx >= 0) {
+        product.id = savedProducts[existingIdx].id;
+        savedProducts[existingIdx] = product;
+      } else {
+        savedProducts.push(product);
+      }
+      localStorage.setItem('saved_products', JSON.stringify(savedProducts));
+
       try {
-        const res = await fetch('/api/products', {
+        await fetch('/api/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(product)
         });
-        const data = await res.json();
-        if (data.success) {
-          alert('✅ Product saved successfully!');
-          document.getElementById('addName').value = '';
-          loadProducts();
-        } else {
-          alert('Error: ' + data.message);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Server error saving product');
-      }
+      } catch (err) {}
+
+      alert('✅ Product saved successfully!');
+      document.getElementById('addName').value = '';
+      loadProducts();
     }
 
     async function deleteProduct(id) {
       if (!confirm('Are you sure you want to delete this product?')) return;
+      savedProducts = savedProducts.filter(p => p.id !== id);
+      localStorage.setItem('saved_products', JSON.stringify(savedProducts));
       try {
-        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-        const data = await res.json();
-        if (data.success) {
-          loadProducts();
-        }
-      } catch (err) {
-        alert('Error deleting product');
-      }
+        await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      } catch (err) {}
+      loadProducts();
     }
 
     loadProducts();

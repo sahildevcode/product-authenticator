@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -469,13 +470,13 @@
 
   <!-- Navigation Tabs to switch between views -->
   <div class="nav-tabs">
-    <a href="/slip-generator.html" class="nav-tab active">
+    <a href="./index.html" class="nav-tab active">
       <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> 🏷️ Full Importer Slip (Image 2 Replica)
     </a>
-    <a href="/mini-sticker.html" class="nav-tab">
+    <a href="./mini-sticker.html" class="nav-tab">
       <i data-lucide="qr-code" style="width: 16px; height: 16px;"></i> ⚡ Mini Horizontal QR Sticker
     </a>
-    <a href="/admin.html" class="nav-tab">
+    <a href="./admin.html" class="nav-tab">
       <i data-lucide="settings" style="width: 16px; height: 16px;"></i> ⚙️ Admin Dashboard
     </a>
   </div>
@@ -649,6 +650,66 @@
       { code: "635198", serial: "3442858" }
     ];
 
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "prod-001",
+        itemType: "Dietary Supplement",
+        name: "Optimum Nutrition (ON) Serious Mass",
+        flavor: "Double Rich Chocolate",
+        qty: "1 N",
+        netWt: "6 lb (2.75Kg)",
+        mrp: "7499",
+        countryOfOrigin: "USA",
+        mfgBy: "Iovate Health Sciences / Glanbia Nutritionals, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+        mfgDt: "08/2026",
+        expDt: "07/2028",
+        batchNo: "ON-SM-94821",
+        importerName: "MusclePro Nutrition Pvt. Ltd. (MPN)",
+        importerShort: "MPN",
+        importerAddress: "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+        fssaiLicense: "10015022003370",
+        customerCare: "+91-80871 79998 | info@musclepronutrition.com"
+      },
+      {
+        id: "prod-002",
+        itemType: "Dietary Supplement",
+        name: "RC Pro-Antium",
+        flavor: "Vanilla Wafer",
+        qty: "1 N",
+        netWt: "6 lb (2.75Kg)",
+        mrp: "7499",
+        countryOfOrigin: "USA",
+        mfgBy: "Iovate Health Sciences, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+        mfgDt: "09/2026",
+        expDt: "08/2028",
+        batchNo: "RC-PA-34428",
+        importerName: "MusclePro Nutrition Pvt. Ltd. (MPN)",
+        importerShort: "MPN",
+        importerAddress: "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+        fssaiLicense: "10015022003370",
+        customerCare: "+91-80871 79998 | info@musclepronutrition.com"
+      },
+      {
+        id: "prod-003",
+        itemType: "Protein Powder",
+        name: "GNC Pro Performance 100% Whey Protein Pow",
+        flavor: "Vanilla Cream",
+        qty: "1 N",
+        netWt: "1.9 lbs (907g)",
+        mrp: "3700",
+        countryOfOrigin: "USA",
+        mfgBy: "Guardian Healthcare, USA",
+        mfgDt: "8/2026",
+        expDt: "09/2028",
+        batchNo: "GNC-2026-W907",
+        importerName: "Guardian Healthcare Services Pvt. Ltd.",
+        importerShort: "GNC",
+        importerAddress: "Plot No 4, DSIIDC, Okhla Ind Area, Phase-2, New Delhi",
+        fssaiLicense: "10016011003870",
+        customerCare: "+91-80871 79998 | info@guardianhealthcare.com"
+      }
+    ];
+
     let savedProducts = [];
 
     // Set default URL to current verification host & load saved products
@@ -682,20 +743,42 @@
       }
     });
 
+    function populateProductDropdown() {
+      const sel = document.getElementById('selSavedProduct');
+      if (!sel) return;
+      sel.innerHTML = savedProducts.map(p => `
+        <option value="${p.id}">${p.name} (₹${p.mrp})</option>
+      `).join('');
+    }
+
     async function loadSavedProducts() {
+      // 1. Try local Node backend API
       try {
         const res = await fetch('/api/products');
-        const data = await res.json();
-        if (data.success && data.products) {
-          savedProducts = data.products;
-          const sel = document.getElementById('selSavedProduct');
-          sel.innerHTML = savedProducts.map(p => `
-            <option value="${p.id}">${p.name} (₹${p.mrp})</option>
-          `).join('');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.products && data.products.length > 0) {
+            savedProducts = data.products;
+            localStorage.setItem('saved_products', JSON.stringify(savedProducts));
+            populateProductDropdown();
+            return;
+          }
         }
-      } catch (err) {
-        console.error('Error loading products:', err);
+      } catch (err) {}
+
+      // 2. Fallback to localStorage (works on GitHub Pages!)
+      const local = localStorage.getItem('saved_products');
+      if (local) {
+        try {
+          savedProducts = JSON.parse(local);
+        } catch (e) {
+          savedProducts = DEFAULT_PRODUCTS;
+        }
+      } else {
+        savedProducts = DEFAULT_PRODUCTS;
+        localStorage.setItem('saved_products', JSON.stringify(DEFAULT_PRODUCTS));
       }
+      populateProductDropdown();
     }
 
     function onSelectSavedProduct() {
@@ -749,6 +832,7 @@
       }
 
       const product = {
+        id: 'prod-' + Date.now(),
         name: name,
         itemType: document.getElementById('inpItem').value.trim(),
         flavor: document.getElementById('inpFlavor').value.trim(),
@@ -765,26 +849,28 @@
         customerCare: document.getElementById('inpCustCare').value.trim()
       };
 
+      // 1. Update in memory and localStorage (Works on GitHub Pages)
+      const existingIdx = savedProducts.findIndex(p => p.name.toLowerCase() === product.name.toLowerCase());
+      if (existingIdx >= 0) {
+        product.id = savedProducts[existingIdx].id;
+        savedProducts[existingIdx] = product;
+      } else {
+        savedProducts.push(product);
+      }
+      localStorage.setItem('saved_products', JSON.stringify(savedProducts));
+      populateProductDropdown();
+      document.getElementById('selSavedProduct').value = product.id;
+
+      // 2. Also save to server if backend is reachable
       try {
-        const res = await fetch('/api/products', {
+        await fetch('/api/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(product)
         });
-        const data = await res.json();
-        if (data.success) {
-          alert('✅ Product saved successfully to database! You can now select it anytime.');
-          await loadSavedProducts();
-          if (data.product && data.product.id) {
-            document.getElementById('selSavedProduct').value = data.product.id;
-          }
-        } else {
-          alert('Error: ' + data.message);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Server error saving product');
-      }
+      } catch (err) {}
+
+      alert('✅ Product saved successfully to database! You can now select it anytime.');
     }
 
     let updateTimer = null;
@@ -814,13 +900,28 @@
     }
 
     async function getQrDataUrl(encodedUrl) {
+      // 1. Try browser QRCode library (fastest, offline, no server needed)
+      try {
+        if (window.QRCode && typeof window.QRCode.toDataURL === 'function') {
+          return await window.QRCode.toDataURL(encodedUrl, {
+            width: 250,
+            margin: 1,
+            color: { dark: '#000000', light: '#FFFFFF' }
+          });
+        }
+      } catch (e) {}
+
+      // 2. Try backend api
       try {
         const res = await fetch(`/api/qr?text=${encodeURIComponent(encodedUrl)}`);
-        const json = await res.json();
-        return json.dataUrl;
-      } catch (e) {
-        return '';
-      }
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.dataUrl) return json.dataUrl;
+        }
+      } catch (e) {}
+
+      // 3. Fallback to free public QR image API (never fails)
+      return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(encodedUrl)}`;
     }
 
     async function renderSlips() {

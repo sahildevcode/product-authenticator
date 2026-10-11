@@ -2,13 +2,1071 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/slip-generator.html">
-  <title>Redirecting...</title>
-  <script>
-    window.location.replace('/slip-generator.html');
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authenticity Slip & QR Code Generator (Image 2 Replica)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Top Controls Bar */
+    .top-toolbar {
+      max-width: 1160px;
+      margin: 0 auto 24px;
+      background: white;
+      padding: 16px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toolbar-title h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .toolbar-title p {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #0284c7;
+      color: white;
+    }
+    .btn-primary:hover { background: #0369a1; }
+
+    .btn-dark {
+      background: #0f172a;
+      color: white;
+    }
+    .btn-dark:hover { background: #1e293b; }
+
+    .btn-outline {
+      background: white;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-outline:hover { background: #f8fafc; }
+
+    /* Navigation Bar Links */
+    .nav-tabs {
+      max-width: 1160px;
+      margin: 0 auto 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-tab {
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: #475569;
+      background: white;
+      border: 1px solid #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-tab:hover {
+      background: #f8fafc;
+      color: #0284c7;
+    }
+
+    .nav-tab.active {
+      background: #0284c7;
+      color: white;
+      border-color: #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+
+    /* Layout: Left Settings, Right Slips Preview */
+    .main-grid {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 370px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 920px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Customizer Sidebar */
+    .customizer-card {
+      background: white;
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      height: fit-content;
+    }
+
+    .card-heading {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f172a;
+    }
+
+    /* URL Config Box */
+    .url-config-box {
+      background: #f0f9ff;
+      border: 2px solid #0284c7;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+    }
+
+    .url-config-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 4px;
+    }
+
+    .url-config-desc {
+      font-size: 0.72rem;
+      color: #0284c7;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #0f172a;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    /* Slips Display Grid */
+    .slips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    /* -------------------------------------------------------------------------
+       EXACT REPLICA OF THE AUTHENTICATION SLIP (IMAGE 2)
+    -------------------------------------------------------------------------- */
+    .slip-card {
+      width: 320px;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1.5px solid #d1d5db;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 14px 16px;
+      position: relative;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111827;
+      background-color: #fffefb; /* authentic label off-white */
+    }
+
+    /* Top Importer Row */
+    .slip-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 6px;
+    }
+
+    .importer-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mpn-logo-box {
+      width: 38px;
+      height: 38px;
+      background: #eab308;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.78rem;
+      color: #000;
+      border: 2px solid #ca8a04;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .importer-text-small {
+      font-size: 0.62rem;
+      line-height: 1.2;
+      color: #1f2937;
+    }
+
+    .fssai-veg-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fssai-pill {
+      border: 1px solid #000;
+      border-radius: 12px;
+      padding: 2px 6px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .fssai-pill span {
+      display: block;
+      font-size: 0.52rem;
+      font-weight: normal;
+    }
+
+    /* Vegetarian Green Dot Symbol standard */
+    .veg-symbol {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      background: white;
+    }
+
+    .veg-symbol::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #16a34a;
+      border-radius: 50%;
+    }
+
+    .cust-care-line {
+      font-size: 0.6rem;
+      color: #374151;
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+
+    /* M.R.P. Box */
+    .mrp-section {
+      text-align: center;
+      margin: 8px 0;
+      padding: 4px 0;
+    }
+
+    .mrp-amount {
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #000;
+    }
+
+    .mrp-sub {
+      font-size: 0.62rem;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    /* Key-Value Details */
+    .slip-details-list {
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: #111827;
+      margin-bottom: 10px;
+    }
+
+    .slip-details-list .row {
+      display: flex;
+      margin-bottom: 2px;
+    }
+
+    .slip-details-list .col-label {
+      width: 105px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .slip-details-list .col-val {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    /* -------------------------------------------------------------------------
+       SECURITY AUTHENTICATION AREA (QR CODE + SCRATCH / UNIQUE CODE)
+    -------------------------------------------------------------------------- */
+    .security-auth-box {
+      border: 1.5px dashed #0284c7;
+      background: #f0f9ff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 6px;
+    }
+
+    .qr-container {
+      width: 105px;
+      height: 105px;
+      background: white;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .qr-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .scan-instruction-text {
+      font-size: 0.62rem;
+      color: #0284c7;
+      font-weight: 700;
+      margin-top: 6px;
+      text-align: center;
+      line-height: 1.25;
+    }
+
+
+    @page {
+      size: auto;
+      margin: 8mm;
+    }
+
+    /* Print optimization - ONLY Slips will print */
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .top-toolbar, 
+      .nav-tabs, 
+      .customizer-card {
+        display: none !important;
+      }
+      .main-grid {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      .slips-container {
+        gap: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        justify-content: flex-start !important;
+      }
+      .slip-card {
+        box-shadow: none !important;
+        border: 1.5px solid #000 !important;
+        page-break-inside: avoid !important;
+        margin-bottom: 16px !important;
+      }
+    }
+  </style>
 </head>
-<body style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #475569;">
-  <p>Redirecting to Slip Generator...</p>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="top-toolbar">
+    <div class="toolbar-title">
+      <h1>🏷️ Product Authenticity Slip Generator</h1>
+      <p>Image 2 के आधार पर बना QR Code + Unique Scratch Number वाला स्टिकर स्लिप</p>
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn btn-primary" onclick="window.print()">
+        <i data-lucide="printer" style="width: 16px; height: 16px;"></i> Print Slips / Stickers
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs to switch between views -->
+  <div class="nav-tabs">
+    <a href="./index.html" class="nav-tab active">
+      <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> 🏷️ Full Importer Slip (Image 2 Replica)
+    </a>
+    <a href="./mini-sticker.html" class="nav-tab">
+      <i data-lucide="qr-code" style="width: 16px; height: 16px;"></i> ⚡ Mini Horizontal QR Sticker
+    </a>
+    <a href="./admin.html" class="nav-tab">
+      <i data-lucide="settings" style="width: 16px; height: 16px;"></i> ⚙️ Admin Dashboard
+    </a>
+  </div>
+
+  <div class="main-grid">
+    <!-- Left Sidebar: Customize Details -->
+    <div class="customizer-card">
+      <div class="card-heading">
+        <i data-lucide="sliders" style="width: 18px; height: 18px; color: #0284c7;"></i>
+        Slip Settings & Customization
+      </div>
+
+      <!-- SAVED PRODUCT SELECT & SAVE -->
+      <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 14px; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a;">📦 Select Saved Product</span>
+          <button type="button" onclick="createNewProductForm()" style="background: none; border: none; color: #0284c7; font-size: 0.75rem; font-weight: 700; cursor: pointer; text-decoration: underline;">
+            + New Product
+          </button>
+        </div>
+        <select id="selSavedProduct" class="form-input" style="font-weight: 700; color: #0f172a; margin-bottom: 10px;" onchange="onSelectSavedProduct()">
+          <option value="">Loading saved products...</option>
+        </select>
+        <button type="button" class="btn btn-primary" style="width: 100%; padding: 8px 12px; font-size: 0.8rem; justify-content: center;" onclick="saveCurrentProduct()">
+          <i data-lucide="save" style="width: 14px; height: 14px;"></i> 💾 Save / Update Product
+        </button>
+      </div>
+
+      <!-- NEW: QR CODE DESTINATION URL INPUT -->
+      <div class="url-config-box">
+        <div class="url-config-header">
+          <i data-lucide="globe" style="width: 16px; height: 16px;"></i>
+          QR Code Target URL (Redirect Link)
+        </div>
+        <p class="url-config-desc">
+          Customer jab QR code scan karega toh sidha is URL / Website par redirect hoga:
+        </p>
+
+        <input 
+          type="text" 
+          id="inpCustomUrl" 
+          class="form-input" 
+          placeholder="e.g. https://yourwebsite.com/verify or https://mybrand.in" 
+          value=""
+          oninput="debounceUpdate()"
+          style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: #0369a1;"
+        />
+
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 0.74rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="chkAppendCode" onchange="updateAllSlips()">
+            Embed Secret Code in QR Code?
+          </label>
+          <span style="font-size: 0.68rem; color: #64748b; line-height: 1.4;">
+            • <strong>Unchecked (Aapka Choice):</strong> Sabhi slips par <strong>QR Code ek hi (Same Website URL)</strong> rahega, aur <strong>Serial Number / Scratch Code har dabbe par alag-alag</strong> rahega.<br>
+            • <strong>Checked:</strong> QR scan karte hi code auto-fill ho jayega.
+          </span>
+        </div>
+
+        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #bae6fd; font-size: 0.72rem;">
+          <span style="color: #0369a1; font-weight: 700;">Live QR Encoded URL:</span><br>
+          <a id="lblLiveUrl" href="#" target="_blank" style="word-break: break-all; font-family: monospace; font-size: 0.68rem; color: #0284c7; text-decoration: underline;">
+            Loading...
+          </a>
+        </div>
+      </div>
+
+      <!-- Product Specifications Inputs -->
+      <div class="form-group">
+        <label>Product Name</label>
+        <input type="text" id="inpProdName" class="form-input" value="GNC Pro Performance 100% Whey Protein Pow" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Item Category</label>
+        <input type="text" id="inpItem" class="form-input" value="Protein Powder" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Flavor</label>
+        <input type="text" id="inpFlavor" class="form-input" value="Vanilla Cream" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Net Weight</label>
+        <input type="text" id="inpNetWt" class="form-input" value="1.9 lbs (907g)" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>M.R.P. (₹)</label>
+        <input type="text" id="inpMRP" class="form-input" value="3700" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>FSSAI License No.</label>
+        <input type="text" id="inpFssai" class="form-input" value="10016011003870" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Country of Origin</label>
+        <input type="text" id="inpOrigin" class="form-input" value="USA" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Mfg By</label>
+        <input type="text" id="inpMfgBy" class="form-input" value="Guardian Healthcare" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Mfg Dt. (Manufacture Date)</label>
+        <input type="text" id="inpMfgDt" class="form-input" value="8/2026" placeholder="e.g. 8/2026 or OCT 2026" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Exp. Dt. (Expiry Date)</label>
+        <input type="text" id="inpExpDt" class="form-input" value="09/2028" placeholder="e.g. 09/2028 or SEP 2028" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Importer Brand Name</label>
+        <input type="text" id="inpImporterName" class="form-input" value="Guardian Healthcare Services Pvt. Ltd." oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Importer Logo Text</label>
+        <input type="text" id="inpImporterShort" class="form-input" value="GNC" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group">
+        <label>Importer Address</label>
+        <input type="text" id="inpImporterAddr" class="form-input" value="Kanakia Zillion, LBS Rd, Mumbai-70" placeholder="e.g. Kanakia Zillion, LBS Rd, Mumbai-70" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group" style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px; padding: 10px;">
+        <label style="color: #166534; font-weight: 800;">☎️ Cust Care (Phone | Email)</label>
+        <input type="text" id="inpCustCare" class="form-input" value="+91-80871 79998 | info@musclepronutrition.com" placeholder="e.g. +91-80871 79998 | info@musclepronutrition.com" oninput="updateAllSlips()">
+      </div>
+
+      <hr style="margin: 16px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+      <div class="form-group">
+        <label>Number of Slips to Generate</label>
+        <select id="selCount" class="form-input" onchange="renderSlips()">
+          <option value="1">1 Slip (Single Preview)</option>
+          <option value="2">2 Slips (Different Codes)</option>
+          <option value="4">4 Slips (Batch)</option>
+          <option value="6" selected>6 Slips (Sheet Layout)</option>
+        </select>
+      </div>
+
+      <button class="btn btn-dark" style="width: 100%; margin-top: 8px;" onclick="generateNewBatch()">
+        <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i> Generate New Codes
+      </button>
+    </div>
+
+    <!-- Right: Slips Preview Grid -->
+    <div class="slips-container" id="slipsContainer">
+      <!-- Generated dynamically below -->
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    let slipsData = [
+      { code: "676393", serial: "3442864" },
+      { code: "804577", serial: "3442854" },
+      { code: "942185", serial: "3442855" },
+      { code: "518392", serial: "3442856" },
+      { code: "729401", serial: "3442857" },
+      { code: "635198", serial: "3442858" }
+    ];
+
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "prod-001",
+        itemType: "Dietary Supplement",
+        name: "Optimum Nutrition (ON) Serious Mass",
+        flavor: "Double Rich Chocolate",
+        qty: "1 N",
+        netWt: "6 lb (2.75Kg)",
+        mrp: "7499",
+        countryOfOrigin: "USA",
+        mfgBy: "Iovate Health Sciences / Glanbia Nutritionals, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+        mfgDt: "08/2026",
+        expDt: "07/2028",
+        batchNo: "ON-SM-94821",
+        importerName: "MusclePro Nutrition Pvt. Ltd. (MPN)",
+        importerShort: "MPN",
+        importerAddress: "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+        fssaiLicense: "10015022003370",
+        customerCare: "+91-80871 79998 | info@musclepronutrition.com"
+      },
+      {
+        id: "prod-002",
+        itemType: "Dietary Supplement",
+        name: "RC Pro-Antium",
+        flavor: "Vanilla Wafer",
+        qty: "1 N",
+        netWt: "6 lb (2.75Kg)",
+        mrp: "7499",
+        countryOfOrigin: "USA",
+        mfgBy: "Iovate Health Sciences, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
+        mfgDt: "09/2026",
+        expDt: "08/2028",
+        batchNo: "RC-PA-34428",
+        importerName: "MusclePro Nutrition Pvt. Ltd. (MPN)",
+        importerShort: "MPN",
+        importerAddress: "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
+        fssaiLicense: "10015022003370",
+        customerCare: "+91-80871 79998 | info@musclepronutrition.com"
+      },
+      {
+        id: "prod-003",
+        itemType: "Protein Powder",
+        name: "GNC Pro Performance 100% Whey Protein Pow",
+        flavor: "Vanilla Cream",
+        qty: "1 N",
+        netWt: "1.9 lbs (907g)",
+        mrp: "3700",
+        countryOfOrigin: "USA",
+        mfgBy: "Guardian Healthcare, USA",
+        mfgDt: "8/2026",
+        expDt: "09/2028",
+        batchNo: "GNC-2026-W907",
+        importerName: "Guardian Healthcare Services Pvt. Ltd.",
+        importerShort: "GNC",
+        importerAddress: "Plot No 4, DSIIDC, Okhla Ind Area, Phase-2, New Delhi",
+        fssaiLicense: "10016011003870",
+        customerCare: "+91-80871 79998 | info@guardianhealthcare.com"
+      }
+    ];
+
+    let savedProducts = [];
+
+    // Set default URL to current verification host & load saved products
+    window.addEventListener('DOMContentLoaded', async () => {
+      const defaultUrl = `${window.location.origin}/verify`;
+      const urlInput = document.getElementById('inpCustomUrl');
+      if (!urlInput.value) {
+        urlInput.value = defaultUrl;
+      }
+
+      await loadSavedProducts();
+
+      // Check if URL has query parameters from Admin
+      const urlParams = new URLSearchParams(window.location.search);
+      const qProdId = urlParams.get('productId');
+      const qQty = urlParams.get('qty');
+
+      if (qQty) {
+        const selCount = document.getElementById('selCount');
+        if (selCount) selCount.value = qQty;
+      }
+
+      if (qProdId) {
+        const selProd = document.getElementById('selSavedProduct');
+        if (selProd) {
+          selProd.value = qProdId;
+          onSelectSavedProduct();
+        }
+      } else {
+        renderSlips();
+      }
+    });
+
+    function populateProductDropdown() {
+      const sel = document.getElementById('selSavedProduct');
+      if (!sel) return;
+      sel.innerHTML = savedProducts.map(p => `
+        <option value="${p.id}">${p.name} (₹${p.mrp})</option>
+      `).join('');
+    }
+
+    async function loadSavedProducts() {
+      // 1. Try local Node backend API
+      try {
+        const res = await fetch('/api/products');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.products && data.products.length > 0) {
+            savedProducts = data.products;
+            localStorage.setItem('saved_products', JSON.stringify(savedProducts));
+            populateProductDropdown();
+            return;
+          }
+        }
+      } catch (err) {}
+
+      // 2. Fallback to localStorage (works on GitHub Pages!)
+      const local = localStorage.getItem('saved_products');
+      if (local) {
+        try {
+          savedProducts = JSON.parse(local);
+        } catch (e) {
+          savedProducts = DEFAULT_PRODUCTS;
+        }
+      } else {
+        savedProducts = DEFAULT_PRODUCTS;
+        localStorage.setItem('saved_products', JSON.stringify(DEFAULT_PRODUCTS));
+      }
+      populateProductDropdown();
+    }
+
+    function onSelectSavedProduct() {
+      const prodId = document.getElementById('selSavedProduct').value;
+      const product = savedProducts.find(p => p.id === prodId);
+      if (!product) return;
+
+      if (product.name) document.getElementById('inpProdName').value = product.name;
+      if (product.itemType) document.getElementById('inpItem').value = product.itemType;
+      if (product.flavor) document.getElementById('inpFlavor').value = product.flavor;
+      if (product.netWt) document.getElementById('inpNetWt').value = product.netWt;
+      if (product.mrp) document.getElementById('inpMRP').value = product.mrp;
+      if (product.fssaiLicense) document.getElementById('inpFssai').value = product.fssaiLicense;
+      if (product.countryOfOrigin) document.getElementById('inpOrigin').value = product.countryOfOrigin;
+      if (product.mfgBy) document.getElementById('inpMfgBy').value = product.mfgBy;
+      if (product.mfgDt) document.getElementById('inpMfgDt').value = product.mfgDt;
+      if (product.expDt) document.getElementById('inpExpDt').value = product.expDt;
+      if (product.importerName) document.getElementById('inpImporterName').value = product.importerName;
+      if (product.importerShort) document.getElementById('inpImporterShort').value = product.importerShort;
+      if (product.importerAddress) document.getElementById('inpImporterAddr').value = product.importerAddress;
+
+      if (product.customerCare || product.email) {
+        let contact = product.customerCare || '';
+        if (product.email && !contact.includes(product.email)) {
+          contact = contact ? `${contact} | ${product.email}` : product.email;
+        }
+        document.getElementById('inpCustCare').value = contact;
+      }
+
+      renderSlips();
+    }
+
+    function createNewProductForm() {
+      document.getElementById('inpProdName').value = '';
+      document.getElementById('inpItem').value = 'Health Supplement';
+      document.getElementById('inpFlavor').value = '';
+      document.getElementById('inpNetWt').value = '';
+      document.getElementById('inpMRP').value = '';
+      document.getElementById('inpMfgDt').value = '';
+      document.getElementById('inpExpDt').value = '';
+      document.getElementById('inpImporterAddr').value = 'Kanakia Zillion, LBS Rd, Mumbai-70';
+      document.getElementById('inpCustCare').value = '+91-80871 79998 | info@musclepronutrition.com';
+      document.getElementById('inpProdName').focus();
+    }
+
+    async function saveCurrentProduct() {
+      const name = document.getElementById('inpProdName').value.trim();
+      if (!name) {
+        alert('Please enter a Product Name first.');
+        return;
+      }
+
+      const product = {
+        id: 'prod-' + Date.now(),
+        name: name,
+        itemType: document.getElementById('inpItem').value.trim(),
+        flavor: document.getElementById('inpFlavor').value.trim(),
+        netWt: document.getElementById('inpNetWt').value.trim(),
+        mrp: document.getElementById('inpMRP').value.trim(),
+        fssaiLicense: document.getElementById('inpFssai').value.trim(),
+        countryOfOrigin: document.getElementById('inpOrigin').value.trim(),
+        mfgBy: document.getElementById('inpMfgBy').value.trim(),
+        mfgDt: document.getElementById('inpMfgDt').value.trim(),
+        expDt: document.getElementById('inpExpDt').value.trim(),
+        importerName: document.getElementById('inpImporterName').value.trim(),
+        importerShort: document.getElementById('inpImporterShort').value.trim(),
+        importerAddress: document.getElementById('inpImporterAddr').value.trim(),
+        customerCare: document.getElementById('inpCustCare').value.trim()
+      };
+
+      // 1. Update in memory and localStorage (Works on GitHub Pages)
+      const existingIdx = savedProducts.findIndex(p => p.name.toLowerCase() === product.name.toLowerCase());
+      if (existingIdx >= 0) {
+        product.id = savedProducts[existingIdx].id;
+        savedProducts[existingIdx] = product;
+      } else {
+        savedProducts.push(product);
+      }
+      localStorage.setItem('saved_products', JSON.stringify(savedProducts));
+      populateProductDropdown();
+      document.getElementById('selSavedProduct').value = product.id;
+
+      // 2. Also save to server if backend is reachable
+      try {
+        await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(product)
+        });
+      } catch (err) {}
+
+      alert('✅ Product saved successfully to database! You can now select it anytime.');
+    }
+
+    let updateTimer = null;
+    function debounceUpdate() {
+      clearTimeout(updateTimer);
+      updateTimer = setTimeout(() => {
+        updateAllSlips();
+      }, 350);
+    }
+
+    function getTargetBaseUrl() {
+      const custom = document.getElementById('inpCustomUrl').value.trim();
+      if (custom) {
+        return custom;
+      }
+      return `${window.location.origin}/verify`;
+    }
+
+    function buildFullTargetUrl(code) {
+      let base = getTargetBaseUrl();
+      const appendCode = document.getElementById('chkAppendCode').checked;
+      if (!appendCode) {
+        return base;
+      }
+      const separator = base.includes('?') ? '&' : '?';
+      return `${base}${separator}code=${code}`;
+    }
+
+    async function getQrDataUrl(encodedUrl) {
+      // 1. Try browser QRCode library (fastest, offline, no server needed)
+      try {
+        if (window.QRCode && typeof window.QRCode.toDataURL === 'function') {
+          return await window.QRCode.toDataURL(encodedUrl, {
+            width: 250,
+            margin: 1,
+            color: { dark: '#000000', light: '#FFFFFF' }
+          });
+        }
+      } catch (e) {}
+
+      // 2. Try backend api
+      try {
+        const res = await fetch(`/api/qr?text=${encodeURIComponent(encodedUrl)}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.dataUrl) return json.dataUrl;
+        }
+      } catch (e) {}
+
+      // 3. Fallback to free public QR image API (never fails)
+      return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(encodedUrl)}`;
+    }
+
+    async function renderSlips() {
+      const container = document.getElementById('slipsContainer');
+      const count = parseInt(document.getElementById('selCount').value, 10);
+      container.innerHTML = '<div style="color: #64748b; font-size: 0.9rem;">Generating slips with custom QR codes...</div>';
+
+      const prodName = document.getElementById('inpProdName').value;
+      const item = document.getElementById('inpItem').value;
+      const flavor = document.getElementById('inpFlavor').value;
+      const netWt = document.getElementById('inpNetWt').value;
+      const mrp = document.getElementById('inpMRP').value;
+      const fssai = document.getElementById('inpFssai').value;
+      const origin = document.getElementById('inpOrigin').value;
+      const mfgBy = document.getElementById('inpMfgBy').value;
+      const mfgDt = document.getElementById('inpMfgDt').value;
+      const expDt = document.getElementById('inpExpDt').value;
+      const impName = document.getElementById('inpImporterName').value;
+      const impShort = document.getElementById('inpImporterShort').value;
+      const impAddr = document.getElementById('inpImporterAddr').value || 'Kanakia Zillion, LBS Rd, Mumbai-70';
+      const custCare = document.getElementById('inpCustCare').value || '+91-80871 79998 | info@musclepronutrition.com';
+
+      // Update Live URL indicator in sidebar
+      const sampleUrl = buildFullTargetUrl(slipsData[0].code);
+      const lblLive = document.getElementById('lblLiveUrl');
+      lblLive.innerText = sampleUrl;
+      lblLive.href = sampleUrl;
+
+      let html = '';
+
+      for (let i = 0; i < count; i++) {
+        const itemData = slipsData[i % slipsData.length];
+        const targetUrl = buildFullTargetUrl(itemData.code);
+        const qrUrl = await getQrDataUrl(targetUrl);
+
+        html += `
+          <div class="slip-card">
+            <!-- Top Importer Row -->
+            <div class="slip-top-row">
+              <div class="importer-brand">
+                <div class="mpn-logo-box">${impShort}</div>
+                <div class="importer-text-small">
+                  <strong>Imported By</strong><br>
+                  <strong>${impName}</strong><br>
+                  ${impAddr}
+                </div>
+              </div>
+              <div class="fssai-veg-group">
+                <div class="fssai-pill">
+                  fssai
+                  <span>FSSL ${fssai}</span>
+                </div>
+                <div class="veg-symbol" title="Vegetarian"></div>
+              </div>
+            </div>
+
+            <!-- Cust Care -->
+            <div class="cust-care-line">
+              <strong>Cust Care:</strong> ${custCare}
+            </div>
+
+            <!-- MRP Section -->
+            <div class="mrp-section">
+              <div class="mrp-amount">M.R.P. ₹ ${mrp}</div>
+              <div class="mrp-sub">(Inclusive of all taxes)</div>
+            </div>
+
+            <!-- Key-Value Specifications -->
+            <div class="slip-details-list">
+              <div class="row">
+                <span class="col-label">Item :</span>
+                <span class="col-val">${item}</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Product :</span>
+                <span class="col-val">${prodName}</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Flavor :</span>
+                <span class="col-val">${flavor}</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Qty :</span>
+                <span class="col-val">1 N</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Net Wt :</span>
+                <span class="col-val">${netWt}</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Country of Origin :</span>
+                <span class="col-val">${origin}</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Mfg By :</span>
+                <span class="col-val">${mfgBy}</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Mfg Dt. :</span>
+                <span class="col-val">${mfgDt}</span>
+              </div>
+              <div class="row">
+                <span class="col-label">Exp. Dt :</span>
+                <span class="col-val">${expDt}</span>
+              </div>
+            </div>
+
+            <!-- Bottom Security Box: ONLY QR CODE -->
+            <div class="security-auth-box">
+              <div class="qr-container" title="Scan to open: ${targetUrl}">
+                <img src="${qrUrl}" alt="QR Code">
+              </div>
+              <div class="scan-instruction-text">
+                📷 Scan QR to Verify Authenticity
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function updateAllSlips() {
+      renderSlips();
+    }
+
+    async function generateNewBatch() {
+      try {
+        const res = await fetch('/api/admin/generate-codes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ count: 10, codeLength: 6 })
+        });
+        const data = await res.json();
+        if (data.success && data.generated) {
+          slipsData = data.generated.map(g => ({ code: g.code, serial: g.serialNo }));
+          renderSlips();
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error generating new codes');
+      }
+    }
+  </script>
 </body>
 </html>

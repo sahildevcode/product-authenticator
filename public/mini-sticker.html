@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -348,13 +349,13 @@
 
   <!-- Navigation Tabs to switch between views -->
   <div class="nav-tabs">
-    <a href="/slip-generator.html" class="nav-tab">
+    <a href="./index.html" class="nav-tab">
       <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> 🏷️ Full Importer Slip (Image 2 Replica)
     </a>
-    <a href="/mini-sticker.html" class="nav-tab active">
+    <a href="./mini-sticker.html" class="nav-tab active">
       <i data-lucide="qr-code" style="width: 16px; height: 16px;"></i> ⚡ Mini Horizontal QR Sticker
     </a>
-    <a href="/admin.html" class="nav-tab">
+    <a href="./admin.html" class="nav-tab">
       <i data-lucide="settings" style="width: 16px; height: 16px;"></i> ⚙️ Admin Dashboard
     </a>
   </div>
@@ -478,13 +479,28 @@
     }
 
     async function getQrDataUrl(url) {
+      // 1. Try browser QRCode library
+      try {
+        if (window.QRCode && typeof window.QRCode.toDataURL === 'function') {
+          return await window.QRCode.toDataURL(url, {
+            width: 200,
+            margin: 1,
+            color: { dark: '#000000', light: '#FFFFFF' }
+          });
+        }
+      } catch (e) {}
+
+      // 2. Try backend api
       try {
         const res = await fetch(`/api/qr?text=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        return data.dataUrl;
-      } catch (err) {
-        return '';
-      }
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.dataUrl) return data.dataUrl;
+        }
+      } catch (err) {}
+
+      // 3. Fallback to free public QR API
+      return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
     }
 
     async function renderStickers() {
