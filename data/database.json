@@ -22,27 +22,6 @@
       "email": "info@musclepronutrition.com"
     },
     {
-      "id": "prod-002",
-      "itemType": "Dietary Supplement",
-      "name": "RC Pro-Antium",
-      "flavor": "Vanilla Wafer",
-      "qty": "1 N",
-      "netWt": "6 lb (2.75Kg)",
-      "mrp": "7499",
-      "countryOfOrigin": "USA",
-      "mfgBy": "Iovate Health Sciences, 3880 Jeffrey Blvd, Blasdell, NY 14219, USA",
-      "mfgDt": "09/2026",
-      "expDt": "08/2028",
-      "batchNo": "RC-PA-34428",
-      "importerName": "MusclePro Nutrition Pvt. Ltd. (MPN)",
-      "importerAddress": "Unit 339, Kanakia Zillion, LBS Rd, Kurla (W) Mumbai-70, Maharashtra",
-      "fssaiLicense": "10015022003370",
-      "fssaiApproved": true,
-      "fccCertified": true,
-      "customerCare": "+91-80871 79998",
-      "email": "info@musclepronutrition.com"
-    },
-    {
       "id": "prod-003",
       "itemType": "Protein Powder",
       "name": "GNC Pro Performance 100% Whey Protein Pow",

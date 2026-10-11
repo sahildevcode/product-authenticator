@@ -377,6 +377,16 @@
             <label>Importer Logo Text</label>
             <input type="text" id="addLogo" class="form-control" value="GNC">
           </div>
+
+          <div class="form-grid-item">
+            <label>Importer Address</label>
+            <input type="text" id="addImporterAddr" class="form-control" value="Kanakia Zillion, LBS Rd, Mumbai-70" placeholder="e.g. Kanakia Zillion, LBS Rd, Mumbai-70">
+          </div>
+
+          <div class="form-grid-item">
+            <label>Cust Care Contact (Phone | Email)</label>
+            <input type="text" id="addCustCare" class="form-control" value="+91-80871 79998 | info@musclepronutrition.com" placeholder="e.g. +91-80871 79998 | info@brand.com">
+          </div>
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 10px;">
@@ -475,7 +485,9 @@
         countryOfOrigin: document.getElementById('addOrigin').value.trim(),
         mfgBy: document.getElementById('addMfgBy').value.trim(),
         importerName: document.getElementById('addImporter').value.trim(),
-        importerShort: document.getElementById('addLogo').value.trim()
+        importerShort: document.getElementById('addLogo').value.trim(),
+        importerAddress: document.getElementById('addImporterAddr').value.trim(),
+        customerCare: document.getElementById('addCustCare').value.trim()
       };
 
       try {

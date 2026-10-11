@@ -604,6 +604,16 @@
         <input type="text" id="inpImporterShort" class="form-input" value="GNC" oninput="updateAllSlips()">
       </div>
 
+      <div class="form-group">
+        <label>Importer Address</label>
+        <input type="text" id="inpImporterAddr" class="form-input" value="Kanakia Zillion, LBS Rd, Mumbai-70" placeholder="e.g. Kanakia Zillion, LBS Rd, Mumbai-70" oninput="updateAllSlips()">
+      </div>
+
+      <div class="form-group" style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px; padding: 10px;">
+        <label style="color: #166534; font-weight: 800;">☎️ Cust Care (Phone | Email)</label>
+        <input type="text" id="inpCustCare" class="form-input" value="+91-80871 79998 | info@musclepronutrition.com" placeholder="e.g. +91-80871 79998 | info@musclepronutrition.com" oninput="updateAllSlips()">
+      </div>
+
       <hr style="margin: 16px 0; border: none; border-top: 1px solid #e2e8f0;">
 
       <div class="form-group">
@@ -705,6 +715,15 @@
       if (product.expDt) document.getElementById('inpExpDt').value = product.expDt;
       if (product.importerName) document.getElementById('inpImporterName').value = product.importerName;
       if (product.importerShort) document.getElementById('inpImporterShort').value = product.importerShort;
+      if (product.importerAddress) document.getElementById('inpImporterAddr').value = product.importerAddress;
+
+      if (product.customerCare || product.email) {
+        let contact = product.customerCare || '';
+        if (product.email && !contact.includes(product.email)) {
+          contact = contact ? `${contact} | ${product.email}` : product.email;
+        }
+        document.getElementById('inpCustCare').value = contact;
+      }
 
       renderSlips();
     }
@@ -717,6 +736,8 @@
       document.getElementById('inpMRP').value = '';
       document.getElementById('inpMfgDt').value = '';
       document.getElementById('inpExpDt').value = '';
+      document.getElementById('inpImporterAddr').value = 'Kanakia Zillion, LBS Rd, Mumbai-70';
+      document.getElementById('inpCustCare').value = '+91-80871 79998 | info@musclepronutrition.com';
       document.getElementById('inpProdName').focus();
     }
 
@@ -739,7 +760,9 @@
         mfgDt: document.getElementById('inpMfgDt').value.trim(),
         expDt: document.getElementById('inpExpDt').value.trim(),
         importerName: document.getElementById('inpImporterName').value.trim(),
-        importerShort: document.getElementById('inpImporterShort').value.trim()
+        importerShort: document.getElementById('inpImporterShort').value.trim(),
+        importerAddress: document.getElementById('inpImporterAddr').value.trim(),
+        customerCare: document.getElementById('inpCustCare').value.trim()
       };
 
       try {
@@ -817,6 +840,8 @@
       const expDt = document.getElementById('inpExpDt').value;
       const impName = document.getElementById('inpImporterName').value;
       const impShort = document.getElementById('inpImporterShort').value;
+      const impAddr = document.getElementById('inpImporterAddr').value || 'Kanakia Zillion, LBS Rd, Mumbai-70';
+      const custCare = document.getElementById('inpCustCare').value || '+91-80871 79998 | info@musclepronutrition.com';
 
       // Update Live URL indicator in sidebar
       const sampleUrl = buildFullTargetUrl(slipsData[0].code);
@@ -840,7 +865,7 @@
                 <div class="importer-text-small">
                   <strong>Imported By</strong><br>
                   <strong>${impName}</strong><br>
-                  Kanakia Zillion, LBS Rd, Mumbai-70
+                  ${impAddr}
                 </div>
               </div>
               <div class="fssai-veg-group">
@@ -854,7 +879,7 @@
 
             <!-- Cust Care -->
             <div class="cust-care-line">
-              <strong>Cust Care:</strong> +91-80871 79998 | info@musclepronutrition.com
+              <strong>Cust Care:</strong> ${custCare}
             </div>
 
             <!-- MRP Section -->
