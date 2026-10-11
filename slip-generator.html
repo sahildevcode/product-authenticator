@@ -527,7 +527,7 @@
 
         <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
           <label style="font-size: 0.74rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px; cursor: pointer;">
-            <input type="checkbox" id="chkAppendCode" onchange="updateAllSlips()">
+            <input type="checkbox" id="chkAppendCode" onchange="onToggleAppendCode()">
             Embed Secret Code in QR Code?
           </label>
           <span style="font-size: 0.68rem; color: #64748b; line-height: 1.4;">
@@ -714,10 +714,19 @@
 
     // Set default URL to current verification host & load saved products
     window.addEventListener('DOMContentLoaded', async () => {
-      const defaultUrl = `${window.location.origin}/verify`;
+      // 1. Restore saved Target URL from localStorage
+      const savedTargetUrl = localStorage.getItem('qr_target_url');
+      const defaultUrl = savedTargetUrl || `${window.location.origin}/verify`;
       const urlInput = document.getElementById('inpCustomUrl');
-      if (!urlInput.value) {
+      if (urlInput) {
         urlInput.value = defaultUrl;
+      }
+
+      // 2. Restore Append Code checkbox state
+      const savedAppend = localStorage.getItem('qr_append_code');
+      if (savedAppend !== null) {
+        const chk = document.getElementById('chkAppendCode');
+        if (chk) chk.checked = (savedAppend === 'true');
       }
 
       await loadSavedProducts();
@@ -875,17 +884,30 @@
 
     let updateTimer = null;
     function debounceUpdate() {
+      const customUrl = document.getElementById('inpCustomUrl').value.trim();
+      if (customUrl) {
+        localStorage.setItem('qr_target_url', customUrl);
+      }
       clearTimeout(updateTimer);
       updateTimer = setTimeout(() => {
         updateAllSlips();
       }, 350);
     }
 
+    function onToggleAppendCode() {
+      const chk = document.getElementById('chkAppendCode');
+      localStorage.setItem('qr_append_code', chk.checked ? 'true' : 'false');
+      updateAllSlips();
+    }
+
     function getTargetBaseUrl() {
       const custom = document.getElementById('inpCustomUrl').value.trim();
       if (custom) {
+        localStorage.setItem('qr_target_url', custom);
         return custom;
       }
+      const saved = localStorage.getItem('qr_target_url');
+      if (saved) return saved;
       return `${window.location.origin}/verify`;
     }
 

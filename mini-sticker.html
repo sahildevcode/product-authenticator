@@ -457,9 +457,10 @@
     ];
 
     window.addEventListener('DOMContentLoaded', () => {
-      const defaultUrl = `${window.location.origin}/verify`;
+      const savedUrl = localStorage.getItem('qr_target_url');
+      const defaultUrl = savedUrl || `${window.location.origin}/verify`;
       const urlInput = document.getElementById('inpUrl');
-      if (!urlInput.value) {
+      if (urlInput) {
         urlInput.value = defaultUrl;
       }
       renderStickers();
@@ -467,6 +468,10 @@
 
     let debounceTimer = null;
     function debounceRender() {
+      const custom = document.getElementById('inpUrl').value.trim();
+      if (custom) {
+        localStorage.setItem('qr_target_url', custom);
+      }
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         renderStickers();
@@ -475,7 +480,13 @@
 
     function getTargetUrl() {
       const custom = document.getElementById('inpUrl').value.trim();
-      return custom || `${window.location.origin}/verify`;
+      if (custom) {
+        localStorage.setItem('qr_target_url', custom);
+        return custom;
+      }
+      const saved = localStorage.getItem('qr_target_url');
+      if (saved) return saved;
+      return `${window.location.origin}/verify`;
     }
 
     async function getQrDataUrl(url) {
