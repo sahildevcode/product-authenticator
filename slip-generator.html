@@ -505,6 +505,26 @@
         </button>
       </div>
 
+      <div class="form-group" style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+        <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a; display: block; margin-bottom: 8px;">🎛️ Slip Display Controls (Toggle)</span>
+        
+        <!-- Toggle Logo -->
+        <label style="font-size: 0.78rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 6px 0; border-bottom: 1px dashed #cbd5e1;">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <i data-lucide="circle-dot" style="width: 14px; height: 14px; color: #eab308;"></i> Show Importer Logo
+          </span>
+          <input type="checkbox" id="chkShowLogo" checked onchange="onToggleLogo()" style="width: 18px; height: 18px; cursor: pointer;">
+        </label>
+
+        <!-- Toggle QR Code -->
+        <label style="font-size: 0.78rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 6px 0;">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <i data-lucide="qr-code" style="width: 14px; height: 14px; color: #0284c7;"></i> Show QR Code Box
+          </span>
+          <input type="checkbox" id="chkShowQr" checked onchange="onToggleQr()" style="width: 18px; height: 18px; cursor: pointer;">
+        </label>
+      </div>
+
       <!-- NEW: QR CODE DESTINATION URL INPUT -->
       <div class="url-config-box">
         <div class="url-config-header">
@@ -729,6 +749,19 @@
         if (chk) chk.checked = (savedAppend === 'true');
       }
 
+      // 3. Restore Logo & QR toggle preferences
+      const savedShowLogo = localStorage.getItem('slip_show_logo');
+      if (savedShowLogo !== null) {
+        const chkLogo = document.getElementById('chkShowLogo');
+        if (chkLogo) chkLogo.checked = (savedShowLogo === 'true');
+      }
+
+      const savedShowQr = localStorage.getItem('slip_show_qr');
+      if (savedShowQr !== null) {
+        const chkQr = document.getElementById('chkShowQr');
+        if (chkQr) chkQr.checked = (savedShowQr === 'true');
+      }
+
       await loadSavedProducts();
 
       // Check if URL has query parameters from Admin
@@ -900,6 +933,18 @@
       updateAllSlips();
     }
 
+    function onToggleLogo() {
+      const chk = document.getElementById('chkShowLogo');
+      localStorage.setItem('slip_show_logo', chk.checked ? 'true' : 'false');
+      updateAllSlips();
+    }
+
+    function onToggleQr() {
+      const chk = document.getElementById('chkShowQr');
+      localStorage.setItem('slip_show_qr', chk.checked ? 'true' : 'false');
+      updateAllSlips();
+    }
+
     function getTargetBaseUrl() {
       const custom = document.getElementById('inpCustomUrl').value.trim();
       if (custom) {
@@ -966,6 +1011,9 @@
       const impAddr = document.getElementById('inpImporterAddr').value || 'Kanakia Zillion, LBS Rd, Mumbai-70';
       const custCare = document.getElementById('inpCustCare').value || '+91-80871 79998 | info@musclepronutrition.com';
 
+      const showLogo = document.getElementById('chkShowLogo') ? document.getElementById('chkShowLogo').checked : true;
+      const showQr = document.getElementById('chkShowQr') ? document.getElementById('chkShowQr').checked : true;
+
       // Update Live URL indicator in sidebar
       const sampleUrl = buildFullTargetUrl(slipsData[0].code);
       const lblLive = document.getElementById('lblLiveUrl');
@@ -984,7 +1032,7 @@
             <!-- Top Importer Row -->
             <div class="slip-top-row">
               <div class="importer-brand">
-                <div class="mpn-logo-box">${impShort}</div>
+                ${showLogo ? `<div class="mpn-logo-box">${impShort}</div>` : ''}
                 <div class="importer-text-small">
                   <strong>Imported By</strong><br>
                   <strong>${impName}</strong><br>
@@ -1052,6 +1100,7 @@
             </div>
 
             <!-- Bottom Security Box: ONLY QR CODE -->
+            ${showQr ? `
             <div class="security-auth-box">
               <div class="qr-container" title="Scan to open: ${targetUrl}">
                 <img src="${qrUrl}" alt="QR Code">
@@ -1060,6 +1109,7 @@
                 📷 Scan QR to Verify Authenticity
               </div>
             </div>
+            ` : ''}
           </div>
         `;
       }
